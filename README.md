@@ -1,4 +1,4 @@
-# Controlling Nexa 433.92MHz appliances
+# Control Nexa 433.92MHz appliances
 This code is command-compatible with the HomeEasy library, so you can capture your remote either with that or use an oscillator. You can capture your remotes and other Nexa devices with this code (convert decimal to binary as needed):
 
 https://playground.arduino.cc/Code/HomeEasy?action=sourceblock&num=3
