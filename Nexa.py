@@ -42,6 +42,7 @@ def sendNexaCommand(sender, group, on_off, recipient):
 
     if len(str(sender)) is not 26:
         print "Your (invalid) sender was", len(str(sender)), "bits long."
+        print "Do you need to add leading zeroes?"
         print
         printUsage()
     if len(str(group)) is not 1:
