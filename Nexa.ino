@@ -55,30 +55,6 @@
 */
 
 
-
-
-
-#define NEXA_KEYFOB_ANTTI               "00100100000110110011011010" // 9465050, recipient 0, LKCT-614 key fob
-#define NEXA_KEYFOB_SABRINA             "01010010010001111110010010" // 21569426, recipient 2, LKCT-614 key fob
-#define NEXA_PLUG_LIVING_ROOM_SHADE     "01110010110011100111101110" // Nexa Remote 30095854, recipient 1, MYCR-1000 power switch (switch marked "2")
-#define NEXA_PLUG_SAUNA_60              "00100110110100000000001010" // Cozify 10174474, recipient 1 or 2?, MYCR-1000 power switch (switch marked "3")
-#define NEXA_PLUG_SHADES                "00100110110100000000001011" // Cozify 10174475, Cozify virtual power switch
-#define NEXA_PLUG_OUTDOOR               "00100110110100000000000101" // Cozify 10174469, LGDR-3500
-#define NEXA_REMOTE                     "01110010110011100111101110" // Nexa Remote 30095854, recipient 0-2 = buttons 1-3, thin remote
-#define NEXA_REMOTE_LCD                 "00100011101001011100101010" // 9344810, recipient 0-15 = channels 1-16, TMT-918
-#define NEXA_RELAY_FRONT                "00100110110100000000001001" // Cozify 10174473, recipient 1, WMR-1000 power relay
-#define NEXA_RELAY_TERRACE              "00100110110100000000000111" // Cozify 10174471, recipient 1, WMR-1000 power relay
-#define NEXA_WALLSWITCH_SAUNA           "01100101000011100101000010" // 26491202, recipient 10, LWST-615 wall switch
-#define DOORBELL_FRONT                  "01100000010000111010111110" // LMLT-711, recipient 0, ON, group 1
-#define DOORBELL_TERRACE                "01100100100000011100100010" // LMLT-711, recipient 0, ON, group 1
-
-#define NEXA_RECIPIENT_SAUNA            "1110" // LCD remote: Sauna 60 scene, channel 15, recipient 14
-#define NEXA_RECIPIENT_GUEST            "1111" // LCD remote: Guest room power switch, channel 16, recipient 15
-// OTHER LCD RECIPIENTS: channel 2: living room lights, 3: hallway lights, 4: kitchen lights, 5: kitchen lightstrip, 6: shower & bathroom lights
-
-
-
-
 #define NEXA_DEVICE_1                   "00000000000000000000000000" // Copy paste your device ID here from HomeEasy
 
 #define NEXA_GROUP_DEFAULT              0
@@ -121,7 +97,6 @@ void setup() {
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------
 void loop() {
   //sendNexaCommand(NEXA_DEVICE_1, NEXA_GROUP_1, NEXA_ON, NEXA_RECIPIENT_0);
-  sendNexaCommand(NEXA_PLUG_LIVING_ROOM_SHADE, NEXA_GROUP_DEFAULT, NEXA_OFF, NEXA_RECIPIENT_2);
   delay(5000);
 }
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------
