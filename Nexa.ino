@@ -76,7 +76,7 @@
 // Timings in microseconds (us). Get sample count by zooming all the way in to the waveform with Audacity.
 // Calculate microseconds with: (samples / sample rate, usually 44100 or 48000) - ~15-20 to compensate for delayMicroseconds overhead.
 // Sample counts listed below with a sample rate of 44100 Hz:
-#define NEXA_AGC1_PULSE                 10000  // 441 samples, LOW
+#define NEXA_AGC1_PULSE                 10000  // 441 samples, LOW, only before first command in sequence
 #define NEXA_AGC2_PULSE                 330    // 15 samples, HIGH
 #define NEXA_AGC3_PULSE                 2800   // 124 samples, LOW
 #define NEXA_RADIO_SILENCE              10680  // 471 samples, LOW
@@ -135,7 +135,10 @@ void sendNexaCommand(char* sender, char* group, char* on_off, char* recipient) {
     errorLog("sendNexaCommand(): Invalid command (too long), cannot continue.");
     return;
   }
-  
+
+  // Transmit the first long LOW AGC (only before first command in sequence):
+  transmitLow(NEXA_AGC1_PULSE);
+
   // Repeat the command:
   for (int i = 0; i < REPEAT_COMMAND; i++) {
     doNexaSend(full_command);
@@ -152,7 +155,6 @@ void sendNexaCommand(char* sender, char* group, char* on_off, char* recipient) {
 void doNexaSend(char* command) {
 
   // Starting (AGC) bits:
-  transmitLow(NEXA_AGC1_PULSE);
   transmitHigh(NEXA_AGC2_PULSE);
   transmitLow(NEXA_AGC3_PULSE);
 
