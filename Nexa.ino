@@ -17,7 +17,7 @@
 * function as follows:
 * 
 * sender = first 26 bits: device ID
-* group = 1 bit: command by recipient ID or all devices paired to a remote (for example)
+* group = 1 bit: command by recipient ID (single button on a remote, for example) or ALL ON/OFF
 * on_off = 1 bit
 * recipient = last 4 bits: button ID on a remote (for example)
 * 
@@ -60,13 +60,13 @@
 #define NEXA_DEVICE_1                   "00000000000000000000000000"
 
 #define NEXA_GROUP_FALSE                "0"    // Only command recipient ID, example: button 1/A from a remote with recipient 0
-#define NEXA_GROUP_TRUE                 "1"    // Command all devices paired with the sender ID (e.g. all devices paired with a remote)
+#define NEXA_GROUP_TRUE                 "1"    // Example: button "ALL ON/OFF" on a remote
 #define NEXA_ON                         "1"
 #define NEXA_OFF                        "0"
-#define NEXA_RECIPIENT_0                "0000" // Example: button 1/A from a remote
-#define NEXA_RECIPIENT_1                "0001" // Example: button 2/B from a remote
-#define NEXA_RECIPIENT_2                "0010" // Example: button 3/C from a remote
-#define NEXA_RECIPIENT_3                "0011" // Example: button 4/D from a remote
+#define NEXA_RECIPIENT_0                "0000" // Example: button 1/A on a remote
+#define NEXA_RECIPIENT_1                "0001" // Example: button 2/B on a remote
+#define NEXA_RECIPIENT_2                "0010" // Example: button 3/C on a remote
+#define NEXA_RECIPIENT_3                "0011" // Example: button 4/D on a remote
 #define NEXA_RECIPIENT_WALL             "1010" // Example: LWST-615 wall switches
 
 // NOTE: You'll want to use group bit 0/FALSE in almost every case, but some
