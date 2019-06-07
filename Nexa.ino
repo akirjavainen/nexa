@@ -34,7 +34,7 @@
 * All sample counts below listed with a sample rate of 44100 Hz (sample count / 44100 = microseconds).
 * 
 * AGC:
-* LOW of approx. 10000 us (441 samples)
+* LOW of approx. 10000 us (441 samples), before first command only
 * HIGH of approx. 340 us (15 samples)
 * LOW of approx. 2812 us (124 samples)
 * 
