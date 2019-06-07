@@ -13,3 +13,5 @@ on_off (int) = 1 bit,
 recipient (string) = last 4 bits
 
 = a total of 32 bits (64 wire bits)
+
+Note that HomeEasy strips leading zeroes off from sender, so add them as needed to make sender 26 bits long.
