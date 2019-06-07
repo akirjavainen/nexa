@@ -40,13 +40,25 @@ NEXA_COMMAND_BIT_ARRAY_SIZE = 32
 # ------------------------------------------------------------------
 def sendNexaCommand(sender, group, on_off, recipient):
 
-    # Let's form and transmit the full command:
-    full_command = sender + group + on_off + recipient
-
-    if len(str(full_command)) is not NEXA_COMMAND_BIT_ARRAY_SIZE:
-        print "Your (invalid) command was", len(str(full_command)), "bits long."
+    if len(str(sender)) is not 26:
+        print "Your (invalid) sender was", len(str(sender)), "bits long."
         print
         printUsage()
+    if len(str(group)) is not 1:
+        print "Your (invalid) group was", len(str(group)), "bits long."
+        print
+        printUsage()
+    if len(str(on_off)) is not 1:
+        print "Your (invalid) on_off was", len(str(on_off)), "bits long."
+        print
+        printUsage()
+    if len(str(recipient)) is not 4:
+        print "Your (invalid) recipient was", len(str(recipient)), "bits long."
+        print
+        printUsage()
+
+    # Let's form and transmit the full command:
+    full_command = sender + group + on_off + recipient
 
     # Prepare:
     GPIO.setmode(GPIO.BOARD)
