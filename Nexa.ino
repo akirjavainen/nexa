@@ -16,10 +16,10 @@
 * Capture the binary commands from your Nexa devices with HomeEasy and copy paste binary bits to the sendNexaCommand()
 * function as follows:
 * 
-* sender (string) = first 26 bits: device ID
-* group (int) = 1 bit: command by recipient ID or all devices paired to a remote (for example)
-* on_off (int) = 1 bit
-* recipient (string) = last 4 bits: button ID on a remote (for example)
+* sender = first 26 bits: device ID
+* group = 1 bit: command by recipient ID or all devices paired to a remote (for example)
+* on_off = 1 bit
+* recipient = last 4 bits: button ID on a remote (for example)
 * 
 * = a total of 32 bits (64 wire bits)
 * 
