@@ -64,7 +64,7 @@
 #define NEXA_ON                         "1"
 #define NEXA_OFF                        "0"
 #define NEXA_RECIPIENT_0                "0000" // Example: button 1/A on a remote
-#define NEXA_RECIPIENT_1                "0001" // Example: button 2/B on a remote
+#define NEXA_RECIPIENT_1                "0001" // Example: button 2/B on a remote, but WMR-1000 power relays use this as well
 #define NEXA_RECIPIENT_2                "0010" // Example: button 3/C on a remote
 #define NEXA_RECIPIENT_3                "0011" // Example: button 4/D on a remote
 #define NEXA_RECIPIENT_WALL             "1010" // Example: LWST-615 wall switches
