@@ -27,8 +27,9 @@ REPEAT_COMMAND = 8
 
 
 # Microseconds (us) converted to seconds for time.sleep() function:
-NEXA_AGC1_PULSE = 0.00033
-NEXA_AGC2_PULSE = 0.0028
+NEXA_AGC1_PULSE = 0.01
+NEXA_AGC2_PULSE = 0.00033
+NEXA_AGC3_PULSE = 0.0028
 NEXA_RADIO_SILENCE = 0.01068
 
 NEXA_PULSE_SHORT = 0.00024
@@ -78,8 +79,9 @@ def sendNexaCommand(sender, group, on_off, recipient):
 def doNexaManchesterSend(command):
 
     # AGC bits:
-    transmitHigh(NEXA_AGC1_PULSE)  # AGC 1
-    transmitLow(NEXA_AGC2_PULSE)  # AGC 2
+    transmitLow(NEXA_AGC1_PULSE)  # AGC 1
+    transmitHigh(NEXA_AGC2_PULSE)  # AGC 2
+    transmitLow(NEXA_AGC3_PULSE)  # AGC 3
 
     for i in command:
 
@@ -130,10 +132,10 @@ def printUsage():
     print os.path.basename(sys.argv[0]), "[sender] [group] [on_off] [recipient]"
     print
     print "Correct parameter lengths are:"
-    print "sender = 26 bits"
-    print "group = 1 bit"
+    print "sender = 26 bits (device ID)"
+    print "group = 1 bit (all ON/OFF or single button?)"
     print "on_off = 1 bit"
-    print "recipient = 4 bits"
+    print "recipient = 4 bits (example: button ID on a remote)"
     print
     exit()
 # ------------------------------------------------------------------
