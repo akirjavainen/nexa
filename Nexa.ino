@@ -35,7 +35,7 @@
 * 
 * AGC:
 * HIGH of approx. 340 us (15 samples)
-* LOW of approx 2812 us (124 samples)
+* LOW of approx. 2812 us (124 samples)
 * 
 * Pulse length:
 * SHORT: approx. 249 us (11 samples), used for HIGH space and wire bit 0 (LOW)
