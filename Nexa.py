@@ -66,6 +66,9 @@ def sendNexaCommand(sender, group, on_off, recipient):
     GPIO.setmode(GPIO.BOARD)
     GPIO.setup(TRANSMIT_PIN, GPIO.OUT)
 
+    # Transmit the first long LOW AGC (only before first command in sequence):
+    transmitLow(NEXA_AGC1_PULSE)  # AGC 1
+
     # Send command:
     for t in range(REPEAT_COMMAND):
         doNexaManchesterSend(full_command)
@@ -79,7 +82,6 @@ def sendNexaCommand(sender, group, on_off, recipient):
 def doNexaManchesterSend(command):
 
     # AGC bits:
-    transmitLow(NEXA_AGC1_PULSE)  # AGC 1
     transmitHigh(NEXA_AGC2_PULSE)  # AGC 2
     transmitLow(NEXA_AGC3_PULSE)  # AGC 3
 
