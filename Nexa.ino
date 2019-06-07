@@ -16,10 +16,10 @@
 * Capture the binary commands from your Nexa devices with HomeEasy and copy paste binary bits to the sendNexaCommand()
 * function as follows:
 * 
-* sender (string) = first 26 bits
-* group (int) = 1 bit
+* sender (string) = first 26 bits: device ID
+* group (int) = 1 bit: command by recipient ID or all devices paired to a remote (for example)
 * on_off (int) = 1 bit
-* recipient (string) = last 4 bits
+* recipient (string) = last 4 bits: button ID on a remote (for example)
 * 
 * = a total of 32 bits (64 wire bits)
 * 
@@ -34,6 +34,7 @@
 * All sample counts below listed with a sample rate of 44100 Hz (sample count / 44100 = microseconds).
 * 
 * AGC:
+* LOW of approx. 10000 us (441 samples)
 * HIGH of approx. 340 us (15 samples)
 * LOW of approx. 2812 us (124 samples)
 * 
@@ -55,24 +56,29 @@
 */
 
 
-#define NEXA_DEVICE_1                   "00000000000000000000000000" // Copy paste your device ID here from HomeEasy
+// Copy paste your device ID here from HomeEasy, adding leading zeroes as necessary to make it 26 bits long:
+#define NEXA_DEVICE_1                   "00000000000000000000000000"
 
-#define NEXA_GROUP_DEFAULT              0
-#define NEXA_GROUP_1                    1
-#define NEXA_ON                         1
-#define NEXA_OFF                        0
-#define NEXA_RECIPIENT_0                "0000"
-#define NEXA_RECIPIENT_1                "0001"
-#define NEXA_RECIPIENT_2                "0010"
-#define NEXA_RECIPIENT_3                "0011"
-#define NEXA_RECIPIENT_WALL             "1010" // Wall switches
+#define NEXA_GROUP_FALSE                "0"    // Only command recipient ID, example: button 1/A from a remote with recipient 0
+#define NEXA_GROUP_TRUE                 "1"    // Command all devices paired with the sender ID (e.g. all devices paired with a remote)
+#define NEXA_ON                         "1"
+#define NEXA_OFF                        "0"
+#define NEXA_RECIPIENT_0                "0000" // Example: button 1/A from a remote
+#define NEXA_RECIPIENT_1                "0001" // Example: button 2/B from a remote
+#define NEXA_RECIPIENT_2                "0010" // Example: button 3/C from a remote
+#define NEXA_RECIPIENT_3                "0011" // Example: button 4/D from a remote
+#define NEXA_RECIPIENT_WALL             "1010" // Example: LWST-615 wall switches
+
+// NOTE: You'll want to use group bit 0/FALSE in almost every case, but some
+// devices like the LMLT-711 doorbell may require 1/TRUE for commands to work.
 
 
 // Timings in microseconds (us). Get sample count by zooming all the way in to the waveform with Audacity.
 // Calculate microseconds with: (samples / sample rate, usually 44100 or 48000) - ~15-20 to compensate for delayMicroseconds overhead.
 // Sample counts listed below with a sample rate of 44100 Hz:
-#define NEXA_AGC1_PULSE                 330    // 15 samples, HIGH
-#define NEXA_AGC2_PULSE                 2800   // 124 samples, LOW
+#define NEXA_AGC1_PULSE                 10000  // 441 samples, LOW
+#define NEXA_AGC2_PULSE                 330    // 15 samples, HIGH
+#define NEXA_AGC3_PULSE                 2800   // 124 samples, LOW
 #define NEXA_RADIO_SILENCE              10680  // 471 samples, LOW
 
 #define NEXA_PULSE_SHORT                240    // 11 samples, used for HIGH space and wire bit 0
@@ -96,7 +102,10 @@ void setup() {
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------
 void loop() {
-  //sendNexaCommand(NEXA_DEVICE_1, NEXA_GROUP_1, NEXA_ON, NEXA_RECIPIENT_0);
+
+  // Try this command to turn your device ON after setting sender ID.
+  // Recipient 0 means button 1/A from a remote (for example):
+  //sendNexaCommand(NEXA_DEVICE_1, NEXA_GROUP_FALSE, NEXA_ON, NEXA_RECIPIENT_0);
   delay(5000);
 }
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -119,6 +128,7 @@ void sendNexaCommand(char* sender, char* group, char* on_off, char* recipient) {
   if (strlen(full_command) < NEXA_COMMAND_BIT_ARRAY_SIZE) {
     // Sender usually starts with a 0, but HomeEasy capture cuts these leading zeroes out:
     errorLog("sendNexaCommand(): Invalid command (too short). Try adding leading 0's to sender to make it 26 bits long.");
+    Serial.println(full_command);
     return;
   }
   if (strlen(full_command) > NEXA_COMMAND_BIT_ARRAY_SIZE) {
@@ -142,8 +152,9 @@ void sendNexaCommand(char* sender, char* group, char* on_off, char* recipient) {
 void doNexaSend(char* command) {
 
   // Starting (AGC) bits:
-  transmitHigh(NEXA_AGC1_PULSE);
-  transmitLow(NEXA_AGC2_PULSE);
+  transmitLow(NEXA_AGC1_PULSE);
+  transmitHigh(NEXA_AGC2_PULSE);
+  transmitLow(NEXA_AGC3_PULSE);
 
   // Transmit command bits:
   for (int i = 0; i < NEXA_COMMAND_BIT_ARRAY_SIZE; i++) {
