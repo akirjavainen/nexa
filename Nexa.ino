@@ -35,7 +35,7 @@
 * 
 * AGC:
 * LOW of approx. 10000 us (441 samples), before first command only
-* HIGH of approx. 340 us (15 samples)
+* HIGH of approx. 249 us (11 samples)
 * LOW of approx. 2812 us (124 samples)
 * 
 * Pulse length:
@@ -50,7 +50,7 @@
 * Wire 0 = HIGH space (short), short LOW
 * Wire 1 = HIGH space (short), long LOW
 *  
-* "Close" the last bit with a (short) HIGH space and end with LOW radio silence of (minimum) 471 samples = 10680 us
+* "Close" the last bit with a (short) HIGH space and end with LOW radio silence of (minimum) 472 samples = 10703 us
 * 
 ******************************************************************************************************************************************************************
 */
@@ -77,9 +77,9 @@
 // Calculate microseconds with: (samples / sample rate, usually 44100 or 48000) - ~15-20 to compensate for delayMicroseconds overhead.
 // Sample counts listed below with a sample rate of 44100 Hz:
 #define NEXA_AGC1_PULSE                 10000  // 441 samples, LOW, only before first command in sequence
-#define NEXA_AGC2_PULSE                 330    // 15 samples, HIGH
+#define NEXA_AGC2_PULSE                 240    // 11 samples, HIGH
 #define NEXA_AGC3_PULSE                 2800   // 124 samples, LOW
-#define NEXA_RADIO_SILENCE              10680  // 471 samples, LOW
+#define NEXA_RADIO_SILENCE              10700  // 472 samples, LOW
 
 #define NEXA_PULSE_SHORT                240    // 11 samples, used for HIGH space and wire bit 0
 #define NEXA_PULSE_LONG                 1370   // 61 samples, used for wire bit 1
@@ -106,7 +106,9 @@ void loop() {
   // Try this command to turn your device ON after setting sender ID.
   // Recipient 0 means button 1/A from a remote (for example):
   //sendNexaCommand(NEXA_DEVICE_1, NEXA_GROUP_FALSE, NEXA_ON, NEXA_RECIPIENT_0);
-  delay(5000);
+  delay(3000);
+  //sendNexaCommand(NEXA_DEVICE_1, NEXA_GROUP_FALSE, NEXA_OFF, NEXA_RECIPIENT_0);
+  delay(3000);
 }
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------
 
