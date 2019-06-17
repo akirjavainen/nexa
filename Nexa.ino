@@ -38,7 +38,7 @@
 * HIGH of approx. 318 us (14 samples, same as HIGH space between wire bits)
 * LOW of approx. 2449 us (108 samples)
 * 
-* Data bits (each data bit consisting of two wire bits):
+* Data bits (each data bit consisting of two wire bits, separated by HIGH space):
 * Data 0 = Wire 01
 * Data 1 = Wire 10
 * 
