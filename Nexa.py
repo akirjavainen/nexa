@@ -27,13 +27,13 @@ REPEAT_COMMAND = 8
 
 
 # Microseconds (us) converted to seconds for time.sleep() function:
-NEXA_AGC1_PULSE = 0.01
-NEXA_AGC2_PULSE = 0.00024
-NEXA_AGC3_PULSE = 0.0028
-NEXA_RADIO_SILENCE = 0.0107
+NEXA_PULSE_HIGH_SPACE = 0.00031
+NEXA_PULSE_WIRE_0 = 0.0002
+NEXA_PULSE_WIRE_1 = 0.001195
 
-NEXA_PULSE_SHORT = 0.00024
-NEXA_PULSE_LONG = 0.00137
+NEXA_PULSE_AGC1 = NEXA_PULSE_HIGH_SPACE
+NEXA_PULSE_AGC2 = 0.00244
+NEXA_RADIO_SILENCE = 0.008844
 
 NEXA_COMMAND_BIT_ARRAY_SIZE = 32
 
@@ -66,8 +66,8 @@ def sendNexaCommand(sender, group, on_off, recipient):
     GPIO.setmode(GPIO.BOARD)
     GPIO.setup(TRANSMIT_PIN, GPIO.OUT)
 
-    # Transmit the first long LOW AGC (only before first command in sequence):
-    transmitLow(NEXA_AGC1_PULSE)  # AGC 1
+    # Transmit radio silence before the first command in sequence:
+    transmitLow(NEXA_RADIO_SILENCE)
 
     # Send command:
     for t in range(REPEAT_COMMAND):
@@ -82,8 +82,8 @@ def sendNexaCommand(sender, group, on_off, recipient):
 def doNexaManchesterSend(command):
 
     # AGC bits:
-    transmitHigh(NEXA_AGC2_PULSE)  # AGC 2
-    transmitLow(NEXA_AGC3_PULSE)  # AGC 3
+    transmitHigh(NEXA_PULSE_AGC1)  # AGC 1
+    transmitLow(NEXA_PULSE_AGC2)  # AGC 2
 
     for i in command:
 
@@ -100,17 +100,17 @@ def doNexaManchesterSend(command):
             exitProgram()
 
     # Radio silence:
-    transmitHigh(NEXA_PULSE_SHORT)  # HIGH space to close the last wire bit
+    transmitHigh(NEXA_PULSE_HIGH_SPACE)  # HIGH space to close the last wire bit
     transmitLow(NEXA_RADIO_SILENCE)
 # ------------------------------------------------------------------
 
 
 # ------------------------------------------------------------------
 def transmitNexaWireBit(wire_bit):
-    transmitHigh(NEXA_PULSE_SHORT)  # HIGH space
+    transmitHigh(NEXA_PULSE_HIGH_SPACE)  # HIGH space
 
-    if wire_bit == 0: transmitLow(NEXA_PULSE_SHORT)  # Wire bit 0
-    if wire_bit == 1: transmitLow(NEXA_PULSE_LONG)  # Wire bit 1
+    if wire_bit == 0: transmitLow(NEXA_PULSE_WIRE_0)  # Wire bit 0
+    if wire_bit == 1: transmitLow(NEXA_PULSE_WIRE_1)  # Wire bit 1
 # ------------------------------------------------------------------
 
 
