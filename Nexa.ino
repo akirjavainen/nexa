@@ -26,31 +26,38 @@
 * Note that HomeEasy strips leading zeroes off from sender, so add them as needed to make sender 26 bits long.
 * 
 * 
-* 
 * PROTOCOL DESCRIPTION
 * 
+* Manchester encoding is used.
 * A single command is: 2 AGC bits + 32 command bits (64 wire bits) + radio silence
 *
 * All sample counts below listed with a sample rate of 44100 Hz (sample count / 44100 = microseconds).
 * 
 * AGC:
-* LOW of approx. 10000 us (441 samples), before first command only
-* HIGH of approx. 249 us (11 samples)
-* LOW of approx. 2812 us (124 samples)
+* Start with radio silence, LOW of approx. 8844 us (390 samples)
+* HIGH of approx. 318 us (14 samples, same as HIGH space between wire bits)
+* LOW of approx. 2449 us (108 samples)
 * 
-* Pulse length:
-* SHORT: approx. 249 us (11 samples), used for HIGH space and wire bit 0 (LOW)
-* LONG: approx. 1383 us (61 samples), used for wire bit 1 (LOW)
-* 
-* Data bits:
+* Data bits (each data bit consisting of two wire bits):
 * Data 0 = Wire 01
 * Data 1 = Wire 10
 * 
 * Wire bits:
-* Wire 0 = HIGH space (short), short LOW
-* Wire 1 = HIGH space (short), long LOW
+* Wire 0 = HIGH space + short LOW of approx. 204 us (9 samples)
+* Wire 1 = HIGH space + long LOW of approx. 1202 us (53 samples)
 *  
-* "Close" the last bit with a (short) HIGH space and end with LOW radio silence of (minimum) 472 samples = 10703 us
+* "Close" the last wire bit with a HIGH space and end with LOW radio silence of (minimum) 8844 us (390 samples)
+* 
+* 
+* NOTE ABOUT TIMINGS OF NEXA DEVICES
+* 
+* Timings actually vary considerably between different Nexa devices. I used an oscilloscope to capture about a
+* dozen different remotes, key fobs and wall switches. I tried to pick average timings to achieve maximum
+* compatibility with this code.
+* 
+* Nexa receivers generally aren't terribly picky about the timings (probably for the aforementioned reason), but 
+* other devices implementing the Nexa protocol can be more so. This is something I noticed with Cozify Hub: some
+* tweaking was necessary to make it recognize my commands.
 * 
 ******************************************************************************************************************************************************************
 */
@@ -76,20 +83,20 @@
 // Timings in microseconds (us). Get sample count by zooming all the way in to the waveform with Audacity.
 // Calculate microseconds with: (samples / sample rate, usually 44100 or 48000) - ~15-20 to compensate for delayMicroseconds overhead.
 // Sample counts listed below with a sample rate of 44100 Hz:
-#define NEXA_AGC1_PULSE                 10000  // 441 samples, LOW, only before first command in sequence
-#define NEXA_AGC2_PULSE                 240    // 11 samples, HIGH
-#define NEXA_AGC3_PULSE                 2800   // 124 samples, LOW
-#define NEXA_RADIO_SILENCE              10700  // 472 samples, LOW
+#define NEXA_PULSE_HIGH_SPACE           310                      // 14 samples, between every LOW wire bit
+#define NEXA_PULSE_WIRE_0               200                      // 9 samples, wire bit 0 (LOW)
+#define NEXA_PULSE_WIRE_1               1195                     // 53 samples, wire bit 1 (LOW)
 
-#define NEXA_PULSE_SHORT                240    // 11 samples, used for HIGH space and wire bit 0
-#define NEXA_PULSE_LONG                 1370   // 61 samples, used for wire bit 1
+#define NEXA_PULSE_AGC1                 NEXA_PULSE_HIGH_SPACE    // Same as HIGH space
+#define NEXA_PULSE_AGC2                 2440                     // 108 samples, LOW
+#define NEXA_RADIO_SILENCE              8844                     // 390 samples, LOW, before the first and after each command
 
-#define NEXA_COMMAND_BIT_ARRAY_SIZE     32     // Command bit count, wire bit count is double (64)
+#define NEXA_COMMAND_BIT_ARRAY_SIZE     32                       // Command bit count, wire bit count is double (64)
 
 
-#define TRANSMIT_PIN                    13     // We'll use digital 13 for transmitting
-#define REPEAT_COMMAND                  8      // How many times to repeat the same command: original remotes and Cozify Hub repeat 5-7 times
-#define DEBUG                           false  // Some extra info on serial
+#define TRANSMIT_PIN                    13                       // We'll use digital 13 for transmitting
+#define REPEAT_COMMAND                  8                        // How many times to repeat the same command: original remotes and Cozify Hub repeat 5-7 times
+#define DEBUG                           false                    // Some extra info on serial
 
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -138,8 +145,8 @@ void sendNexaCommand(char* sender, char* group, char* on_off, char* recipient) {
     return;
   }
 
-  // Transmit the first long LOW AGC (only before first command in sequence):
-  transmitLow(NEXA_AGC1_PULSE);
+  // Transmit radio silence before the first command in sequence:
+  transmitLow(NEXA_RADIO_SILENCE);
 
   // Repeat the command:
   for (int i = 0; i < REPEAT_COMMAND; i++) {
@@ -157,8 +164,8 @@ void sendNexaCommand(char* sender, char* group, char* on_off, char* recipient) {
 void doNexaSend(char* command) {
 
   // Starting (AGC) bits:
-  transmitHigh(NEXA_AGC2_PULSE);
-  transmitLow(NEXA_AGC3_PULSE);
+  transmitHigh(NEXA_PULSE_AGC1);
+  transmitLow(NEXA_PULSE_AGC2);
 
   // Transmit command bits:
   for (int i = 0; i < NEXA_COMMAND_BIT_ARRAY_SIZE; i++) {
@@ -179,17 +186,17 @@ void doNexaSend(char* command) {
 
   // Radio silence at the end.
   // It's better to rather go a bit over than under required length.
-  transmitHigh(NEXA_PULSE_SHORT); // HIGH space to close the last wire bit
+  transmitHigh(NEXA_PULSE_HIGH_SPACE); // HIGH space to "close" the last wire bit
   transmitLow(NEXA_RADIO_SILENCE);
 }
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------
 void transmitNexaWireBit(int wire_bit) {
-  transmitHigh(NEXA_PULSE_SHORT); // HIGH space
+  transmitHigh(NEXA_PULSE_HIGH_SPACE); // HIGH space
 
-  if (wire_bit == 0) transmitLow(NEXA_PULSE_SHORT); // Wire bit 0
-  if (wire_bit == 1) transmitLow(NEXA_PULSE_LONG); // Wire bit 1
+  if (wire_bit == 0) transmitLow(NEXA_PULSE_WIRE_0); // Wire bit 0
+  if (wire_bit == 1) transmitLow(NEXA_PULSE_WIRE_1); // Wire bit 1
 }
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------
 
