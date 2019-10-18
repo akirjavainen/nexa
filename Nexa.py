@@ -42,20 +42,20 @@ NEXA_COMMAND_BIT_ARRAY_SIZE = 32
 def sendNexaCommand(sender, group, on_off, recipient):
 
     if len(str(sender)) is not 26:
-        print "Your (invalid) sender was", len(str(sender)), "bits long."
-        print "Do you need to add leading zeroes?"
+        print("Your (invalid) sender was", len(str(sender)), "bits long.")
+        print("Do you need to add leading zeroes?")
         print
         printUsage()
     if len(str(group)) is not 1:
-        print "Your (invalid) group was", len(str(group)), "bits long."
+        print("Your (invalid) group was", len(str(group)), "bits long.")
         print
         printUsage()
     if len(str(on_off)) is not 1:
-        print "Your (invalid) on_off was", len(str(on_off)), "bits long."
+        print("Your (invalid) on_off was", len(str(on_off)), "bits long.")
         print
         printUsage()
     if len(str(recipient)) is not 4:
-        print "Your (invalid) recipient was", len(str(recipient)), "bits long."
+        print("Your (invalid) recipient was", len(str(recipient)), "bits long.")
         print
         printUsage()
 
@@ -96,7 +96,7 @@ def doNexaManchesterSend(command):
             transmitNexaWireBit(0)
 
         else:
-            print "Invalid character", i, "in command! Exiting..."
+            print("Invalid character", i, "in command! Exiting...")
             exitProgram()
 
     # Radio silence:
@@ -130,14 +130,14 @@ def transmitLow(delay):
 
 # ------------------------------------------------------------------
 def printUsage():
-    print "Usage:"
-    print os.path.basename(sys.argv[0]), "[sender] [group] [on_off] [recipient]"
+    print("Usage:")
+    print(os.path.basename(sys.argv[0]), "[sender] [group] [on_off] [recipient]")
     print
-    print "Correct parameter lengths are:"
-    print "sender = 26 bits (device ID)"
-    print "group = 1 bit (all ON/OFF or single button?)"
-    print "on_off = 1 bit"
-    print "recipient = 4 bits (example: button ID on a remote)"
+    print("Correct parameter lengths are:")
+    print("sender = 26 bits (device ID)")
+    print("group = 1 bit (all ON/OFF or single button?)")
+    print("on_off = 1 bit")
+    print("recipient = 4 bits (example: button ID on a remote)")
     print
     exit()
 # ------------------------------------------------------------------
