@@ -64,7 +64,8 @@
 
 
 // Copy paste your device ID here from HomeEasy, adding leading zeroes as necessary to make it 26 bits long:
-#define NEXA_DEVICE_1                   "00000000000000000000000000"
+//#define NEXA_DEVICE_1                   "00000000000000000000000000"
+#define NEXA_DEVICE_1                   "01110010110011100111101110"
 
 #define NEXA_GROUP_FALSE                "0"    // Only command recipient ID, example: button 1/A from a remote with recipient 0
 #define NEXA_GROUP_TRUE                 "1"    // Example: button "ALL ON/OFF" on a remote
@@ -94,7 +95,7 @@
 #define NEXA_COMMAND_BIT_ARRAY_SIZE     32                       // Command bit count, wire bit count is double (64)
 
 
-#define TRANSMIT_PIN                    13                       // We'll use digital 13 for transmitting
+#define TRANSMIT_PIN                    4                       // We'll use digital 13 for transmitting
 #define REPEAT_COMMAND                  8                        // How many times to repeat the same command: original remotes and Cozify Hub repeat 5-7 times
 #define DEBUG                           false                    // Some extra info on serial
 
@@ -112,10 +113,11 @@ void loop() {
 
   // Try this command to turn your device ON after setting sender ID.
   // Recipient 0 means button 1/A from a remote (for example):
-  //sendNexaCommand(NEXA_DEVICE_1, NEXA_GROUP_FALSE, NEXA_ON, NEXA_RECIPIENT_0);
+  sendNexaCommand(NEXA_DEVICE_1, NEXA_GROUP_FALSE, NEXA_ON, NEXA_RECIPIENT_0);
   delay(3000);
-  //sendNexaCommand(NEXA_DEVICE_1, NEXA_GROUP_FALSE, NEXA_OFF, NEXA_RECIPIENT_0);
+  sendNexaCommand(NEXA_DEVICE_1, NEXA_GROUP_FALSE, NEXA_OFF, NEXA_RECIPIENT_0);
   delay(3000);
+
 }
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------
 
